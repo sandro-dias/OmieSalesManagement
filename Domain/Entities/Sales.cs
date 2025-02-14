@@ -2,7 +2,7 @@
 
 namespace Domain.Entities
 {
-    public class Sales
+    public class Sales : EntityBase
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long SalesId { get; set; }

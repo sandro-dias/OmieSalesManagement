@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities
 {
-    public class Product
+    public class Product : EntityBase
     {
         public Guid ProductId { get; set; }
         public long SalesId { get; set; }
