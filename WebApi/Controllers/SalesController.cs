@@ -20,11 +20,12 @@ namespace WebApi.Controllers
         private readonly IGetSalesUseCase _getSalesUseCase;
         private readonly IDeleteSalesUseCase _deleteSalesUseCase;
 
-        public SalesController(ILogger<SalesController> logger, ICreateSalesUseCase createSalesUseCase, IGetSalesUseCase getSalesUseCase)
+        public SalesController(ILogger<SalesController> logger, ICreateSalesUseCase createSalesUseCase, IGetSalesUseCase getSalesUseCase, IDeleteSalesUseCase deleteSalesUseCase)
         {
             _logger = logger;
             _createSalesUseCase = createSalesUseCase;
             _getSalesUseCase = getSalesUseCase;
+            _deleteSalesUseCase = deleteSalesUseCase;
         }
 
         [HttpPost]

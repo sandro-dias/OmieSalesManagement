@@ -11,7 +11,7 @@ namespace Infrastructure.Data.Configurations
             builder.ToTable("PRODUTO");
 
             builder.HasKey(x => x.ProductId);
-            builder.Property(x => x.ProductId).HasColumnName("ID_PRODUTO").HasColumnType("INT");
+            builder.Property(x => x.ProductId).HasColumnName("ID_PRODUTO").HasColumnType("VARCHAR");
             builder.Property(x => x.SalesId).HasColumnName("ID_VENDA").HasColumnType("BIGINT");
             builder.Property(x => x.Name).HasColumnName("NOME").HasColumnType("VARCHAR");
             builder.Property(x => x.Quantity).HasColumnName("QUANTIDADE").HasColumnType("INT");

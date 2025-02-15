@@ -10,7 +10,6 @@ namespace Infrastructure.DependencyInjection
 {
     public static class InfrastructureExtensions
     {
-
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDataBase(configuration);
@@ -30,13 +29,12 @@ namespace Infrastructure.DependencyInjection
             return services;
         }
 
-        //TODO: adicionar connectionString no appsettings.json
         private static IServiceCollection AddDataBase(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<SalesManagementContext>(
                 (builder) =>
                 {
-                    builder.UseSqlServer(configuration.GetConnectionString("SalesContext"));
+                    builder.UseSqlServer(configuration.GetConnectionString("SalesManagementContext"));
                 });
 
             return services;

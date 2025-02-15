@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Reflection;
 
 namespace Infrastructure.Data
@@ -18,6 +19,33 @@ namespace Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Product>(builder =>
+            {
+                builder.ToTable("PRODUTO");
+
+                builder.HasKey(x => x.ProductId);
+
+                builder.Property(x => x.SalesId);
+                builder.Property(x => x.ProductId);
+                builder.Property(x => x.Name).HasMaxLength(100);
+                builder.Property(x => x.Quantity);
+                builder.Property(x => x.UnitValue).HasPrecision(18,2);
+                builder.Property(x => x.TotalValue).HasPrecision(18, 2);
+            });
+
+            modelBuilder.Entity<Sales>(builder =>
+            {
+                builder.ToTable("VENDAS");
+
+                builder.HasKey(x => x.SalesId);
+                builder.Property(x => x.SalesId).ValueGeneratedOnAdd();
+
+                builder.Property(x => x.Customer).HasMaxLength(100);
+                builder.Property(x => x.Date);
+                builder.Property(x => x.Value).HasPrecision(18, 2);
+            });
+
+
             base.OnModelCreating(modelBuilder);
             modelBuilder.UsePropertyAccessMode(PropertyAccessMode.Property);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
