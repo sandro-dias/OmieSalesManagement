@@ -1,4 +1,6 @@
-﻿namespace Application.UseCases.CreateSales
+﻿using Application.UseCases.CreateSales.Input;
+
+namespace Application.UseCases.CreateSales
 {
     public interface ICreateSalesUseCase
     {

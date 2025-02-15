@@ -1,4 +1,5 @@
 ﻿using Application.UseCases.CreateSales;
+using Application.UseCases.CreateSales.Input;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
