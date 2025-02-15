@@ -10,13 +10,6 @@ namespace Application.UseCases.CreateSales
     {
         public async Task<CreateSalesOutput> CreateSalesAsync(CreateSalesInput input, CancellationToken cancellationToken)
         {
-            foreach (var product in input.Products)
-            {
-                var productsValidation = productValidator.Validate(product);
-                if (!productsValidation.IsValid)
-                    return LogAndReturnError(productsValidation.Errors.Select(x => x.ErrorMessage).ToArray());
-            }
-
             var salesValidation = salesValidator.Validate(input);
             if (!salesValidation.IsValid)
                 return LogAndReturnError(salesValidation.Errors.Select(x => x.ErrorMessage).ToArray());
@@ -24,11 +17,15 @@ namespace Application.UseCases.CreateSales
             var sales = Sales.CreateSales(input.Customer, input.Value);
             sales = await unitOfWork.SalesRepository.AddAsync(sales, cancellationToken);
 
+            var products = new List<Product>();
             foreach (var product in input.Products)
             {
-                var productList = Product.CreateProduct(sales.SalesId, product.Name, product.Quantity, product.Quantity, product.TotalValue);
-                await unitOfWork.ProductRepository.AddAsync(productList, cancellationToken);
+                var productsValidation = productValidator.Validate(product);
+                if (!productsValidation.IsValid)
+                    return LogAndReturnError(productsValidation.Errors.Select(x => x.ErrorMessage).ToArray());
+                products.Add(Product.CreateProduct(sales.SalesId, product.Name, product.Quantity, product.Quantity, product.TotalValue));
             }
+            await unitOfWork.ProductRepository.AddAllAsync(products, cancellationToken);
 
             await unitOfWork.CommitAsync(cancellationToken);
             return new CreateSalesOutput(sales.SalesId);

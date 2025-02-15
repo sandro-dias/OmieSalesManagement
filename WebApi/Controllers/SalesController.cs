@@ -1,5 +1,6 @@
 ﻿using Application.UseCases.CreateSales;
 using Application.UseCases.CreateSales.Input;
+using Application.UseCases.GetSales;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -16,11 +17,13 @@ namespace WebApi.Controllers
     {
         private readonly ILogger<SalesController> _logger;
         private readonly ICreateSalesUseCase _createSalesUseCase;
+        private readonly IGetSalesUseCase _getSalesUseCase;
 
-        public SalesController(ILogger<SalesController> logger, ICreateSalesUseCase createSalesUseCase)
+        public SalesController(ILogger<SalesController> logger, ICreateSalesUseCase createSalesUseCase, IGetSalesUseCase getSalesUseCase)
         {
             _logger = logger;
             _createSalesUseCase = createSalesUseCase;
+            _getSalesUseCase = getSalesUseCase;
         }
 
         [HttpPost]
@@ -43,6 +46,29 @@ namespace WebApi.Controllers
             {
                 _logger.LogError("[{ClassName}] It was not possible to post the sales. The message returned was: {@Message}", nameof(SalesController), ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao inserir venda no banco de dados.");
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        [SwaggerOperation(
+            Summary = "Busca as vendas no banco de dados",
+            Description = "Esse endpoint busca as vendas mais recentes cadastradas no banco de dados para a página inicial da landing page. Para usá-lo é preciso se autenticar.")]
+        [Route("api/get-sales")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetSales(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _getSalesUseCase.GetSalesAsync(cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("[{ClassName}] It was not possible to get the sales. The message returned was: {@Message}", nameof(SalesController), ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao buscar vendas no banco de dados.");
             }
         }
     }

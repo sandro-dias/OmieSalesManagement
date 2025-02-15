@@ -13,8 +13,8 @@ namespace Infrastructure.Data
         {
         }
 
-        public virtual DbSet<Sales> Workshop { get; set; }
-        public virtual DbSet<Product> Customer { get; set; }
+        public virtual DbSet<Sales> Sales { get; set; }
+        public virtual DbSet<Product> Product { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
