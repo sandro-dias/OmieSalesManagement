@@ -64,6 +64,12 @@ namespace Infrastructure.Data.Repository
             return Task.CompletedTask;
         }
 
+        public Task DeleteListAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+        {
+            DbContext.Entry(entities).State = EntityState.Deleted;
+            return Task.CompletedTask;
+        }
+
         public async Task<IEnumerable<T>> AddAllAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
         {
             await DbContext.Set<T>().AddRangeAsync(entities, cancellationToken);

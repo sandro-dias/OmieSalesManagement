@@ -13,6 +13,7 @@ namespace Application.Data.Repository
         Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
         Task<T> FirstOrDefaultAsync(ISpecification<T> spec, CancellationToken cancellationToken = default);
         Task DeleteAsync(T entity, CancellationToken cancellationToken = default);
+        Task DeleteListAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
         Task<IEnumerable<T>> AddAllAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
         Task<PagedResult<T>> GetPagedResultAsync(int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default);
     }
