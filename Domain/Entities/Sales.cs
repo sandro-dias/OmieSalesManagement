@@ -21,5 +21,20 @@ namespace Domain.Entities
                 Value = value
             };
         }
+
+        public void UpdateDate(DateTime date) 
+        {
+            Date = date;
+        }
+
+        public void UpdateCustomer(string customer)
+        {
+            Customer = customer;
+        }
+
+        public void UpdateValue(decimal value)
+        {
+            Value = value;
+        }
     }
 }

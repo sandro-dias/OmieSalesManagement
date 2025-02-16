@@ -1,4 +1,4 @@
-﻿namespace Application.UseCases.CreateSales.Input
+﻿namespace Application.UseCases.Shared
 {
     public class ProductInput
     {

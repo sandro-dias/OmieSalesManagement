@@ -1,26 +1,23 @@
 ﻿using Application.Data;
 using Application.Data.Specification;
+using Application.UseCases.DeleteSales;
 using Microsoft.Extensions.Logging;
 
-namespace Application.UseCases.DeleteSales
+namespace Application.UseCases.GetSalesById
 {
-    public class DeleteSalesUseCase(IUnitOfWork unitOfWork, ILogger<DeleteSalesUseCase> logger) : IDeleteSalesUseCase
+    internal class GetSalesByIdUseCase(ILogger<GetSalesByIdUseCase> logger, IUnitOfWork unitOfWork) : IGetSalesByIdUseCase
     {
-        public async Task DeleteSalesAsync(DeleteSalesInput input, CancellationToken cancellationToken)
+        public async Task<GetSalesByIdOutput> GetSalesByIdAsync(GetSalesByIdInput input, CancellationToken cancellationToken)
         {
             var sales = await unitOfWork.SalesRepository.GetByIdAsync(input.SalesId, cancellationToken);
             if (sales == null)
             {
                 logger.LogError("{[ClassName]} The sales does not exist on database", nameof(DeleteSalesUseCase));
-                return;
+                return new GetSalesByIdOutput();
             }
 
-            await unitOfWork.SalesRepository.DeleteAsync(sales, cancellationToken);
-
             var products = await unitOfWork.ProductRepository.ListAsync(new GetProductsBySalesId(sales.SalesId), cancellationToken);
-            await unitOfWork.ProductRepository.DeleteListAsync(products, cancellationToken);
-
-            await unitOfWork.CommitAsync(cancellationToken);
+            return new GetSalesByIdOutput(sales, products);
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Application.UseCases.CreateSales;
-using Application.UseCases.CreateSales.Input;
 using Application.UseCases.DeleteSales;
 using Application.UseCases.GetSales;
+using Application.UseCases.GetSalesById;
+using Application.UseCases.UpdateSales;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
@@ -13,21 +14,8 @@ namespace WebApi.Controllers
     [Route("v1")]
     [SwaggerTag("Endpoints relacionados a gestão de vendas")]
     [ExcludeFromCodeCoverage]
-    public class SalesController : ControllerBase
+    public class SalesController(ILogger<SalesController> logger) : ControllerBase
     {
-        private readonly ILogger<SalesController> _logger;
-        private readonly ICreateSalesUseCase _createSalesUseCase;
-        private readonly IGetSalesUseCase _getSalesUseCase;
-        private readonly IDeleteSalesUseCase _deleteSalesUseCase;
-
-        public SalesController(ILogger<SalesController> logger, ICreateSalesUseCase createSalesUseCase, IGetSalesUseCase getSalesUseCase, IDeleteSalesUseCase deleteSalesUseCase)
-        {
-            _logger = logger;
-            _createSalesUseCase = createSalesUseCase;
-            _getSalesUseCase = getSalesUseCase;
-            _deleteSalesUseCase = deleteSalesUseCase;
-        }
-
         [HttpPost]
         //[Authorize]
         [SwaggerOperation(
@@ -37,16 +25,16 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateSales([Required][FromBody] CreateSalesInput input, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateSales([FromServices] ICreateSalesUseCase createSalesUseCase, [Required][FromBody] CreateSalesInput input, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await _createSalesUseCase.CreateSalesAsync(input, cancellationToken);
+                var result = await createSalesUseCase.CreateSalesAsync(input, cancellationToken);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError("[{ClassName}] It was not possible to post the sales. The message returned was: {@Message}", nameof(SalesController), ex.Message);
+                logger.LogError("[{ClassName}] It was not possible to post the sales. The message returned was: {@Message}", nameof(SalesController), ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao inserir venda no banco de dados.");
             }
         }
@@ -60,17 +48,63 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetSales(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetSales([FromServices] IGetSalesUseCase getSalesUseCase, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await _getSalesUseCase.GetSalesAsync(cancellationToken);
+                var result = await getSalesUseCase.GetSalesAsync(cancellationToken);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError("[{ClassName}] It was not possible to get the sales. The message returned was: {@Message}", nameof(SalesController), ex.Message);
+                logger.LogError("[{ClassName}] It was not possible to get the sales. The message returned was: {@Message}", nameof(SalesController), ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao buscar vendas no banco de dados.");
+            }
+        }
+
+        [HttpGet]
+        //[Authorize]
+        [SwaggerOperation(
+            Summary = "Busca uma venda no banco de dados pelo seu Id",
+            Description = "Esse endpoint busca uma venda no banco de dados pelo seu Id para possibilitar sua atualização. Para usá-lo é preciso se autenticar.")]
+        [Route("api/get-sales-by-id/{salesId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetSalesById([FromServices] IGetSalesByIdUseCase getSalesByIdUseCase, [FromRoute] long salesId,CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await getSalesByIdUseCase.GetSalesByIdAsync(new GetSalesByIdInput(salesId), cancellationToken);
+                return result is not null ? Ok(result) : NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("[{ClassName}] It was not possible to get the sale. The message returned was: {@Message}", nameof(SalesController), ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao buscar a venda no banco de dados.");
+            }
+        }
+
+        [HttpPut]
+        //[Authorize]
+        [SwaggerOperation(
+            Summary = "Atualiza uma venda do banco de dados",
+            Description = "Esse endpoint atualiza uma venda do banco de dados. Para usá-lo é preciso se autenticar.")]
+        [Route("api/update-sales")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateSales([FromServices] IUpdateSalesUseCase updateSalesUseCase, [FromBody] UpdateSalesInput input, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await updateSalesUseCase.UpdateSalesAsync(input, cancellationToken);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("[{ClassName}] It was not possible to update the sales. The message returned was: {@Message}", nameof(SalesController), ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao atualizar uma venda do banco de dados.");
             }
         }
 
@@ -83,16 +117,16 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteSales([FromQuery] DeleteSalesInput input, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteSales([FromServices] IDeleteSalesUseCase deleteSalesUseCase, [FromQuery] DeleteSalesInput input, CancellationToken cancellationToken)
         {
             try
             {
-                await _deleteSalesUseCase.DeleteSalesAsync(input, cancellationToken);
+                await deleteSalesUseCase.DeleteSalesAsync(input, cancellationToken);
                 return NoContent();
             }
             catch (Exception ex)
             {
-                _logger.LogError("[{ClassName}] It was not possible to delete the sales. The message returned was: {@Message}", nameof(SalesController), ex.Message);
+                logger.LogError("[{ClassName}] It was not possible to delete the sales. The message returned was: {@Message}", nameof(SalesController), ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao remover uma venda do banco de dados.");
             }
         }

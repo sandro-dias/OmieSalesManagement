@@ -1,5 +1,4 @@
-﻿using Application.UseCases.CreateSales.Input;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Application.UseCases.CreateSales.Validator
 {

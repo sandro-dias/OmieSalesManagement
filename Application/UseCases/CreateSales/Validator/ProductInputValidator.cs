@@ -1,4 +1,4 @@
-﻿using Application.UseCases.CreateSales.Input;
+﻿using Application.UseCases.Shared;
 using FluentValidation;
 
 namespace Application.UseCases.CreateSales.Validator

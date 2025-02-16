@@ -1,8 +1,10 @@
 ﻿using Application.UseCases.CreateSales;
-using Application.UseCases.CreateSales.Input;
 using Application.UseCases.CreateSales.Validator;
 using Application.UseCases.DeleteSales;
 using Application.UseCases.GetSales;
+using Application.UseCases.GetSalesById;
+using Application.UseCases.Shared;
+using Application.UseCases.UpdateSales;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +31,8 @@ namespace Application.DependencyInjection
             services.AddScoped<ICreateSalesUseCase, CreateSalesUseCase>();
             services.AddScoped<IGetSalesUseCase, GetSalesUseCase>();
             services.AddScoped<IDeleteSalesUseCase, DeleteSalesUseCase>();
+            services.AddScoped<IUpdateSalesUseCase, UpdateSalesUseCase>();
+            services.AddScoped<IGetSalesByIdUseCase, GetSalesByIdUseCase>();
         }
 
         private static void AddValidators(this IServiceCollection services)

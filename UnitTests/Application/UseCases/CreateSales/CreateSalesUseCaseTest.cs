@@ -1,6 +1,6 @@
 ﻿using Application.Data;
 using Application.UseCases.CreateSales;
-using Application.UseCases.CreateSales.Input;
+using Application.UseCases.Shared;
 using AutoFixture;
 using Domain.Entities;
 using FluentValidation;
@@ -10,7 +10,7 @@ using Moq;
 using Shouldly;
 using Xunit;
 
-namespace UnitTests.Application.UseCases;
+namespace UnitTests.Application.UseCases.CreateSales;
 public class CreateSalesUseCaseTests
 {
     private readonly Fixture _fixture = new();
@@ -35,6 +35,27 @@ public class CreateSalesUseCaseTests
     }
 
     [Fact]
+    public async Task CreateSalesAsync_ShouldReturnError_WhenSalesValidationFails()
+    {
+        // Arrange
+        var input = new CreateSalesInput();
+        var fakeValidationFailure = new ValidationFailure("Customer", "Customer should not be null");
+        var salesValidationResult = new ValidationResult(new List<ValidationFailure>() { fakeValidationFailure });
+
+        salesValidatorMock.Setup(v => v.Validate(It.IsAny<CreateSalesInput>())).Returns(salesValidationResult);
+
+        // Act
+        var result = await createSalesUseCase.CreateSalesAsync(input, CancellationToken.None);
+
+        // Assert
+        result.SalesId.ShouldBeNull();
+        result.Errors.ShouldNotBeNull();
+        salesValidatorMock.Verify(v => v.Validate(input), Times.Once);
+        productValidatorMock.Verify(v => v.Validate(It.IsAny<ProductInput>()), Times.Never);
+        unitOfWorkMock.Verify(u => u.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
     public async Task CreateSalesAsync_ShouldReturnDefault_WhenProductValidationFails()
     {
         // Arrange
@@ -47,9 +68,15 @@ public class CreateSalesUseCaseTests
             Customer = "Customer A",
         };
 
+        var salesValidationResult = new ValidationResult();
+        salesValidatorMock.Setup(v => v.Validate(It.IsAny<CreateSalesInput>())).Returns(salesValidationResult);
+
         var fakeValidationFailure = new ValidationFailure("Name", "Name should not be null");
         var productValidationResult = new ValidationResult(new List<ValidationFailure>() { fakeValidationFailure });
         productValidatorMock.Setup(v => v.Validate(It.IsAny<ProductInput>())).Returns(productValidationResult);
+
+        var sales = Sales.CreateSales(input.Customer, input.Value);
+        unitOfWorkMock.Setup(u => u.SalesRepository.AddAsync(It.IsAny<Sales>(), It.IsAny<CancellationToken>())).ReturnsAsync(sales);
 
         // Act
         var result = await createSalesUseCase.CreateSalesAsync(input, CancellationToken.None);
@@ -57,7 +84,10 @@ public class CreateSalesUseCaseTests
         // Assert
         result.SalesId.ShouldBeNull();
         result.Errors.ShouldNotBeNull();
-        unitOfWorkMock.Verify(u => u.CommitAsync(CancellationToken.None), Times.Never);
+        salesValidatorMock.Verify(v => v.Validate(input), Times.Once);
+        productValidatorMock.Verify(v => v.Validate(It.IsAny<ProductInput>()), Times.Once);
+        unitOfWorkMock.Verify(u => u.CommitAsync(CancellationToken.None), Times.Once);
+        unitOfWorkMock.Verify(u => u.SalesRepository.DeleteAsync(It.IsAny<Sales>(), CancellationToken.None), Times.Once);
     }
 
     [Fact]
@@ -82,6 +112,6 @@ public class CreateSalesUseCaseTests
         // Assert
         result.SalesId.ShouldBe(sales.SalesId);
         result.Errors.ShouldBeNull();
-        unitOfWorkMock.Verify(u => u.CommitAsync(CancellationToken.None), Times.Once);
+        unitOfWorkMock.Verify(u => u.CommitAsync(CancellationToken.None), Times.Exactly(2));
     }
 }

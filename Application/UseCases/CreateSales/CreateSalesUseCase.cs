@@ -1,5 +1,5 @@
 ﻿using Application.Data;
-using Application.UseCases.CreateSales.Input;
+using Application.UseCases.Shared;
 using Domain.Entities;
 using FluentValidation;
 using Microsoft.Extensions.Logging;

@@ -1,4 +1,6 @@
-﻿namespace Application.UseCases.CreateSales.Input
+﻿using Application.UseCases.Shared;
+
+namespace Application.UseCases.CreateSales
 {
     public class CreateSalesInput
     {

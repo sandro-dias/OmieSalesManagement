@@ -25,7 +25,26 @@ namespace Domain.Entities
                 UnitValue = unitValue,
                 TotalValue = totalValue
             };
+        }
 
+        public void UpdateName(string name)
+        {
+            Name = name;
+        }
+
+        public void UpdateQuantity(int quantity)
+        {
+            Quantity = quantity;
+        }
+
+        public void UpdateUnitValue(decimal unitValue)
+        {
+            UnitValue = unitValue;
+        }
+
+        public void UpdateTotalValue(decimal totalalue)
+        {
+            TotalValue = totalalue;
         }
     }
 }
