@@ -16,13 +16,18 @@ namespace Application.UseCases.CreateSales
 
             var sales = Sales.CreateSales(input.Customer, input.Value);
             sales = await unitOfWork.SalesRepository.AddAsync(sales, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
             var products = new List<Product>();
             foreach (var product in input.Products)
             {
                 var productsValidation = productValidator.Validate(product);
                 if (!productsValidation.IsValid)
-                    return LogAndReturnError(productsValidation.Errors.Select(x => x.ErrorMessage).ToArray());
+                {
+                    var output = LogAndReturnError(productsValidation.Errors.Select(x => x.ErrorMessage).ToArray());
+                    await unitOfWork.SalesRepository.DeleteAsync(sales, cancellationToken);
+                    return output;
+                }
                 products.Add(Product.CreateProduct(sales.SalesId, product.Name, product.Quantity, product.Quantity, product.TotalValue));
             }
             await unitOfWork.ProductRepository.AddAllAsync(products, cancellationToken);

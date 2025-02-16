@@ -24,10 +24,10 @@ namespace Application.UseCases.DeleteSales
                 return;
             }
 
-            await _unitOfWork.SalesRepository.DeleteAsync(sales);
+            await _unitOfWork.SalesRepository.DeleteAsync(sales, cancellationToken);
 
-            var products = await _unitOfWork.ProductRepository.ListAsync(new GetProductsBySalesId(sales.SalesId));
-            await _unitOfWork.ProductRepository.DeleteListAsync(products);
+            var products = await _unitOfWork.ProductRepository.ListAsync(new GetProductsBySalesId(sales.SalesId), cancellationToken);
+            await _unitOfWork.ProductRepository.DeleteListAsync(products, cancellationToken);
 
             await _unitOfWork.CommitAsync(cancellationToken);
         }
