@@ -9,6 +9,7 @@ namespace Infrastructure.Data
         private readonly SalesManagementContext _dbContext;
         public ISalesRepository _salesRepository;
         public IProductRepository _productRepository;
+        public ISalesmanRepository _salesmanRepository;
 
         public UnitOfWork(SalesManagementContext dbContext)
         {
@@ -23,6 +24,11 @@ namespace Infrastructure.Data
         public IProductRepository ProductRepository
         {
             get { return _productRepository ??= new ProductRepository(_dbContext); }
+        }
+
+        public ISalesmanRepository SalesmanRepository
+        {
+            get { return _salesmanRepository ??= new SalesmanRepository(_dbContext); }
         }
 
         public async Task<int> CommitAsync(CancellationToken cancellationToken = default)

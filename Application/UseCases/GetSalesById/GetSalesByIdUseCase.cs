@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.GetSalesById
 {
-    internal class GetSalesByIdUseCase(ILogger<GetSalesByIdUseCase> logger, IUnitOfWork unitOfWork) : IGetSalesByIdUseCase
+    public class GetSalesByIdUseCase(ILogger<GetSalesByIdUseCase> logger, IUnitOfWork unitOfWork) : IGetSalesByIdUseCase
     {
         public async Task<GetSalesByIdOutput> GetSalesByIdAsync(GetSalesByIdInput input, CancellationToken cancellationToken)
         {

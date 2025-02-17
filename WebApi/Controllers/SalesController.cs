@@ -3,6 +3,7 @@ using Application.UseCases.DeleteSales;
 using Application.UseCases.GetSales;
 using Application.UseCases.GetSalesById;
 using Application.UseCases.UpdateSales;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,7 @@ namespace WebApi.Controllers
     public class SalesController(ILogger<SalesController> logger) : ControllerBase
     {
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         [SwaggerOperation(
             Summary = "Cadastra uma venda no banco de dados",
             Description = "Esse endpoint recebe uma lista de produtos para registrar a venda. Para usá-lo é preciso se autenticar.")]
@@ -40,7 +41,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         [SwaggerOperation(
             Summary = "Busca as vendas no banco de dados",
             Description = "Esse endpoint busca as vendas mais recentes cadastradas no banco de dados para a página inicial da landing page. Para usá-lo é preciso se autenticar.")]
@@ -63,7 +64,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         [SwaggerOperation(
             Summary = "Busca uma venda no banco de dados pelo seu Id",
             Description = "Esse endpoint busca uma venda no banco de dados pelo seu Id para possibilitar sua atualização. Para usá-lo é preciso se autenticar.")]
@@ -86,7 +87,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        //[Authorize]
+        [Authorize]
         [SwaggerOperation(
             Summary = "Atualiza uma venda do banco de dados",
             Description = "Esse endpoint atualiza uma venda do banco de dados. Para usá-lo é preciso se autenticar.")]
@@ -109,7 +110,7 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
-        //[Authorize]
+        [Authorize]
         [SwaggerOperation(
             Summary = "Delete uma venda do banco de dados",
             Description = "Esse endpoint deleta uma venda do banco de dados. Para usá-lo é preciso se autenticar.")]

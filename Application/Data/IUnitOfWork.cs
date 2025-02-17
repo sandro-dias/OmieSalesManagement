@@ -6,6 +6,7 @@ namespace Application.Data
     {
         ISalesRepository SalesRepository { get; }
         IProductRepository ProductRepository { get; }
+        ISalesmanRepository SalesmanRepository { get; }
         Task<int> CommitAsync(CancellationToken cancellationToken = default);
     }
 }

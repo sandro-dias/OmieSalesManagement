@@ -44,6 +44,17 @@ namespace Infrastructure.Data
                 builder.Property(x => x.Value).HasPrecision(18, 2);
             });
 
+            modelBuilder.Entity<Salesman>(builder =>
+            {
+                builder.ToTable("VENDEDOR");
+
+                builder.HasKey(x => x.SalesmanId);
+                builder.Property(x => x.SalesmanId).ValueGeneratedOnAdd();
+
+                builder.Property(x => x.Name).HasMaxLength(100);
+                builder.Property(x => x.Password).HasMaxLength(20);
+            });
+
 
             base.OnModelCreating(modelBuilder);
             modelBuilder.UsePropertyAccessMode(PropertyAccessMode.Property);

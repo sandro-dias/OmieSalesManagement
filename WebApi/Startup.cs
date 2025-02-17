@@ -21,28 +21,28 @@ namespace WebApi
             services.AddApplication();
             services.AddInfrastructure(Configuration);
 
-            //var key = Encoding.ASCII.GetBytes(Settings.Secret);
-            //services.AddAuthentication(x =>
-            //{
-            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //})
-            //.AddJwtBearer(x =>
-            //{
-            //    x.RequireHttpsMetadata = true;
-            //    x.SaveToken = true;
-            //    x.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidateIssuerSigningKey = true,
-            //        IssuerSigningKey = new SymmetricSecurityKey(key),
-            //        ValidateIssuer = false,
-            //        ValidateAudience = false
-            //    };
-            //});
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = true;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SalesManagement", Version = "v1", Description = "API de gerenciamento de vendas da Omie" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "OmieSalesManagement", Version = "v1", Description = "API de gerenciamento de vendas da Omie" });
 
                 var securityScheme = new OpenApiSecurityScheme
                 {
@@ -65,6 +65,7 @@ namespace WebApi
                     }
                 };
                 c.AddSecurityRequirement(securityRequirement);
+                c.EnableAnnotations();
             });
         }
 

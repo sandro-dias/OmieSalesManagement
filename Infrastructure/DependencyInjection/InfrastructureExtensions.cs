@@ -26,6 +26,7 @@ namespace Infrastructure.DependencyInjection
         {
             services.AddScoped<ISalesRepository, SalesRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ISalesmanRepository, SalesmanRepository>();
             return services;
         }
 
