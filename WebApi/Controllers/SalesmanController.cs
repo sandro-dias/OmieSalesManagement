@@ -9,7 +9,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("v1")]
-    [SwaggerTag("Endpoints relacionados a gestão de acesso dos vendedores")]
+    [SwaggerTag("Endpoints relacionados a gestão de acesso dos vendedores.")]
     [ExcludeFromCodeCoverage]
     public class SalesmanController(ILogger<SalesmanController> logger, ICreateSalesmanUseCase createSalesmanUseCase) : ControllerBase
     {

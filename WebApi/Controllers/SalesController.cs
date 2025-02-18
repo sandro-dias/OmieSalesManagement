@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("v1")]
-    [SwaggerTag("Endpoints relacionados a gestão de vendas")]
+    [SwaggerTag("Endpoints relacionados a gestão de vendas. Para usar  esses endpoints é preciso se autenticar.")]
     [ExcludeFromCodeCoverage]
     public class SalesController(ILogger<SalesController> logger) : ControllerBase
     {
