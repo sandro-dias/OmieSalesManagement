@@ -6,13 +6,13 @@ namespace Application.UseCases.DeleteSales
 {
     public class DeleteSalesUseCase(IUnitOfWork unitOfWork, ILogger<DeleteSalesUseCase> logger) : IDeleteSalesUseCase
     {
-        public async Task DeleteSalesAsync(DeleteSalesInput input, CancellationToken cancellationToken)
+        public async Task<int> DeleteSalesAsync(DeleteSalesInput input, CancellationToken cancellationToken)
         {
             var sales = await unitOfWork.SalesRepository.GetByIdAsync(input.SalesId, cancellationToken);
             if (sales == null)
             {
                 logger.LogError("{[ClassName]} The sales does not exist on database", nameof(DeleteSalesUseCase));
-                return;
+                return 0;
             }
 
             await unitOfWork.SalesRepository.DeleteAsync(sales, cancellationToken);
@@ -20,7 +20,7 @@ namespace Application.UseCases.DeleteSales
             var products = await unitOfWork.ProductRepository.ListAsync(new GetProductsBySalesId(sales.SalesId), cancellationToken);
             await unitOfWork.ProductRepository.DeleteListAsync(products, cancellationToken);
 
-            await unitOfWork.CommitAsync(cancellationToken);
+            return await unitOfWork.CommitAsync(cancellationToken);
         }
     }
 }

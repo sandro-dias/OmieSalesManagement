@@ -7,7 +7,6 @@
 
         public CreateSalesmanOutput(long salesmanId)
         {
-
             SalesmanId = salesmanId;
         }
 

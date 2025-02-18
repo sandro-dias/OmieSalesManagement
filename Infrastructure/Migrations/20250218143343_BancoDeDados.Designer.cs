@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(SalesManagementContext))]
-    [Migration("20250217132733_SalesmanTable")]
-    partial class SalesmanTable
+    [Migration("20250218143343_BancoDeDados")]
+    partial class BancoDeDados
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,12 +48,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<decimal>("TotalValue")
                         .HasPrecision(18, 2)
-                        .HasColumnType("DECIMAL(19,5)")
+                        .HasColumnType("DECIMAL(18,2)")
                         .HasColumnName("VALOR_TOTAL");
 
                     b.Property<decimal>("UnitValue")
                         .HasPrecision(18, 2)
-                        .HasColumnType("DECIMAL(19,5)")
+                        .HasColumnType("DECIMAL(18,2)")
                         .HasColumnName("VALOR_UNITARIO");
 
                     b.HasKey("ProductId");
@@ -63,12 +63,12 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Sales", b =>
                 {
-                    b.Property<int>("SalesId")
+                    b.Property<long>("SalesId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INT")
+                        .HasColumnType("BIGINT")
                         .HasColumnName("ID_VENDA");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SalesId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("SalesId"));
 
                     b.Property<string>("Customer")
                         .IsRequired()
@@ -82,7 +82,7 @@ namespace Infrastructure.Migrations
 
                     b.Property<decimal>("Value")
                         .HasPrecision(18, 2)
-                        .HasColumnType("DECIMAL(19,5)")
+                        .HasColumnType("DECIMAL(18,2)")
                         .HasColumnName("VALOR_VENDA");
 
                     b.HasKey("SalesId");

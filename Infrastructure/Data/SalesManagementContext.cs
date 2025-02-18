@@ -29,7 +29,7 @@ namespace Infrastructure.Data
                 builder.Property(x => x.Name).HasMaxLength(100);
                 builder.Property(x => x.Quantity);
                 builder.Property(x => x.UnitValue).HasPrecision(18,2);
-                builder.Property(x => x.TotalValue).HasPrecision(18, 2);
+                builder.Property(x => x.TotalValue).HasPrecision(18,2);
             });
 
             modelBuilder.Entity<Sales>(builder =>
@@ -41,7 +41,7 @@ namespace Infrastructure.Data
 
                 builder.Property(x => x.Customer).HasMaxLength(100);
                 builder.Property(x => x.Date);
-                builder.Property(x => x.Value).HasPrecision(18, 2);
+                builder.Property(x => x.Value).HasPrecision(18,2);
             });
 
             modelBuilder.Entity<Salesman>(builder =>

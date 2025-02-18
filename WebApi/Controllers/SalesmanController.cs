@@ -19,14 +19,14 @@ namespace WebApi.Controllers
             Description = "Esse endpoint recebe os dados de um vendedor para futura autenticação.")]
         [Route("api/create-salesman")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateSalesman([Required][FromBody] CreateSalesmanInput input, CancellationToken cancellationToken)
         {
             try
             {
-                await createSalesmanUseCase.CreateSalesmanAsync(input, cancellationToken);
-                return Ok();
+                var result = await createSalesmanUseCase.CreateSalesmanAsync(input, cancellationToken);
+                return result.Errors is null ? Ok(result) : BadRequest(result.Errors);
             }
             catch (Exception ex)
             {

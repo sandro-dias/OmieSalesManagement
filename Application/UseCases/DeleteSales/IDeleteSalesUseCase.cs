@@ -2,6 +2,6 @@
 {
     public interface IDeleteSalesUseCase
     {
-        Task DeleteSalesAsync(DeleteSalesInput input, CancellationToken cancellationToken);
+        Task<int> DeleteSalesAsync(DeleteSalesInput input, CancellationToken cancellationToken);
     }
 }

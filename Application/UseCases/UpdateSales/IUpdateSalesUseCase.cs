@@ -2,6 +2,6 @@
 {
     public interface IUpdateSalesUseCase
     {
-        Task UpdateSalesAsync(UpdateSalesInput input, CancellationToken cancellationToken);
+        Task<int> UpdateSalesAsync(UpdateSalesInput input, CancellationToken cancellationToken);
     }
 }

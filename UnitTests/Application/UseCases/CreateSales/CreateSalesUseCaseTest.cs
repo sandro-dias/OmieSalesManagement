@@ -86,7 +86,7 @@ public class CreateSalesUseCaseTests
         result.Errors.ShouldNotBeNull();
         salesValidatorMock.Verify(v => v.Validate(input), Times.Once);
         productValidatorMock.Verify(v => v.Validate(It.IsAny<ProductInput>()), Times.Once);
-        unitOfWorkMock.Verify(u => u.CommitAsync(CancellationToken.None), Times.Once);
+        unitOfWorkMock.Verify(u => u.CommitAsync(CancellationToken.None), Times.Exactly(2));
         unitOfWorkMock.Verify(u => u.SalesRepository.DeleteAsync(It.IsAny<Sales>(), CancellationToken.None), Times.Once);
     }
 

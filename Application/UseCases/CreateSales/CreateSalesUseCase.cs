@@ -26,6 +26,7 @@ namespace Application.UseCases.CreateSales
                 {
                     var output = LogAndReturnError(productsValidation.Errors.Select(x => x.ErrorMessage).ToArray());
                     await unitOfWork.SalesRepository.DeleteAsync(sales, cancellationToken);
+                    await unitOfWork.CommitAsync(cancellationToken);
                     return output;
                 }
                 products.Add(Product.CreateProduct(sales.SalesId, product.Name, product.Quantity, product.Quantity, product.TotalValue));

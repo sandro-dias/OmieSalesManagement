@@ -24,14 +24,14 @@ namespace WebApi.Controllers
             Description = "Esse endpoint recebe uma lista de produtos para registrar a venda. Para usá-lo é preciso se autenticar.")]
         [Route("api/create-sales")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateSales([FromServices] ICreateSalesUseCase createSalesUseCase, [Required][FromBody] CreateSalesInput input, CancellationToken cancellationToken)
         {
             try
             {
                 var result = await createSalesUseCase.CreateSalesAsync(input, cancellationToken);
-                return Ok(result);
+                return result.Errors is null ? Ok(result) : BadRequest(result.Errors);
             }
             catch (Exception ex)
             {
@@ -77,7 +77,7 @@ namespace WebApi.Controllers
             try
             {
                 var result = await getSalesByIdUseCase.GetSalesByIdAsync(new GetSalesByIdInput(salesId), cancellationToken);
-                return result is not null ? Ok(result) : NotFound();
+                return result.Sales is not null ? Ok(result) : NotFound();
             }
             catch (Exception ex)
             {
@@ -99,8 +99,8 @@ namespace WebApi.Controllers
         {
             try
             {
-                await updateSalesUseCase.UpdateSalesAsync(input, cancellationToken);
-                return Ok();
+                var result = await updateSalesUseCase.UpdateSalesAsync(input, cancellationToken);
+                return result > 0 ? Ok() : NotFound();
             }
             catch (Exception ex)
             {
@@ -115,15 +115,15 @@ namespace WebApi.Controllers
             Summary = "Delete uma venda do banco de dados",
             Description = "Esse endpoint deleta uma venda do banco de dados. Para usá-lo é preciso se autenticar.")]
         [Route("api/delete-sales")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteSales([FromServices] IDeleteSalesUseCase deleteSalesUseCase, [FromQuery] DeleteSalesInput input, CancellationToken cancellationToken)
         {
             try
             {
-                await deleteSalesUseCase.DeleteSalesAsync(input, cancellationToken);
-                return NoContent();
+                var result = await deleteSalesUseCase.DeleteSalesAsync(input, cancellationToken);
+                return result > 0 ? NoContent() : NotFound();
             }
             catch (Exception ex)
             {

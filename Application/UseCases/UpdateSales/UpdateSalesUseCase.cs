@@ -8,13 +8,13 @@ namespace Application.UseCases.UpdateSales
 {
     public class UpdateSalesUseCase(IUnitOfWork unitOfWork, ILogger<UpdateSalesUseCase> logger) : IUpdateSalesUseCase
     {
-        public async Task UpdateSalesAsync(UpdateSalesInput input, CancellationToken cancellationToken)
+        public async Task<int> UpdateSalesAsync(UpdateSalesInput input, CancellationToken cancellationToken)
         {
             var sales = await unitOfWork.SalesRepository.GetByIdAsync(input.SalesId, cancellationToken);
             if (sales == null)
             {
                 logger.LogError("{[ClassName]} The sales does not exist on database", nameof(UpdateSalesUseCase));
-                return;
+                return 0;
             }
 
             sales.UpdateDate(DateTime.Now);
@@ -29,7 +29,7 @@ namespace Application.UseCases.UpdateSales
             if (productsToRemove.Any())
                 await unitOfWork.ProductRepository.DeleteListAsync(productsToRemove, cancellationToken);
 
-            await unitOfWork.CommitAsync(cancellationToken);
+            return await unitOfWork.CommitAsync(cancellationToken);
         }
 
         private async Task UpsertProducts(long salesId, IEnumerable<Product> products, IEnumerable<ProductInput> inputProducts, CancellationToken cancellationToken)

@@ -1,7 +1,10 @@
-﻿namespace Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Domain.Entities
 {
     public class Salesman : EntityBase
     {
+        [Key]
         public long SalesmanId { get; set; }
         public string Name { get; private set; }
         public string Password { get; private set; }

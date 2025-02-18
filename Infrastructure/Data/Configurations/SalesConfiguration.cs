@@ -11,10 +11,10 @@ namespace Infrastructure.Data.Configurations
             builder.ToTable("VENDA");
 
             builder.HasKey(x => x.SalesId);
-            builder.Property(x => x.SalesId).HasColumnName("ID_VENDA").HasColumnType("INT");
+            builder.Property(x => x.SalesId).HasColumnName("ID_VENDA").HasColumnType("BIGINT");
             builder.Property(x => x.Date).HasColumnName("DATA").HasColumnType("DATETIME");
             builder.Property(x => x.Customer).HasColumnName("CLIENTE").HasColumnType("VARCHAR");
-            builder.Property(x => x.Value).HasColumnName("VALOR_VENDA").HasColumnType("DECIMAL(19,5)");
+            builder.Property(x => x.Value).HasColumnName("VALOR_VENDA").HasColumnType("DECIMAL(18,2)");
         }
     }
 }
